@@ -9,6 +9,8 @@ import qualified System.Environment
 import qualified System.Exit
 import System.IO
 
+type ErrorMessage = T.Text
+
 parseArgs :: IO FilePath
 parseArgs = do
   args <- System.Environment.getArgs
@@ -23,12 +25,22 @@ parseArgs = do
         else
           return $ head args
 
+processFile :: FilePath -> Either ErrorMessage T.Text
+-- processFile path = Left "error"
+
+processFile path = Right "true"
+
+printResult :: Either ErrorMessage T.Text -> IO ()
+printResult (Left errMsg) = do
+  TI.hPutStrLn stderr errMsg
+  System.Exit.exitFailure
+printResult (Right out) = TI.putStr out
+
 main :: IO ()
 main = do
   inFile <- parseArgs
-  putStrLn "fin"
-
--- let _ = process_file inFile
+  let out = processFile inFile
+  printResult out
 
 -- args <- getArgs
 -- let fileName = head args
